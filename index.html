@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Chat</title>
+    <title>Chat</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,10 +34,10 @@
 </head>
 <body>
     <div id="chat-container">
-        <h1>WebSocket Chat</h1>
+        <h1>Chat</h1>
         <div id="chat-messages"></div>
         <input type="text" id="message-input" placeholder="Type your message...">
-        <button id="send-button">Send</button>
+        <button id="send-button">Senden</button>
     </div>
 
     <script>
@@ -64,7 +64,7 @@
         sendButton.addEventListener("click", () => {
             const message = messageInput.value.trim();
             if (message !== "") {
-                sendMessage("Stranger", message);
+                sendMessage("Luca", message);
                 messageInput.value = "";
             }
         });
