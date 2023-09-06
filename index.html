@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        #chat-container {
+            width: 400px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        #chat-messages {
+            height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        #message-input {
+            width: 100%;
+            padding: 5px;
+        }
+        #send-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1>WebSocket Chat</h1>
+        <div id="chat-messages"></div>
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button id="send-button">Send</button>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById("chat-messages");
+        const messageInput = document.getElementById("message-input");
+        const sendButton = document.getElementById("send-button");
+        let websocket;
+
+        // Establish a WebSocket connection
+        function connectWebSocket() {
+            websocket = new WebSocket("wss://socketsbay.com/wss/v2/1/demo/");
+
+            websocket.onmessage = (event) => {
+                const messageData = JSON.parse(event.data);
+                appendMessage(messageData.sender, messageData.message);
+            };
+
+            websocket.onclose = (event) => {
+                console.log("WebSocket connection closed:", event);
+            };
+        }
+
+        // Event listener for sending messages
+        sendButton.addEventListener("click", () => {
+            const message = messageInput.value.trim();
+            if (message !== "") {
+                sendMessage("Stranger", message);
+                messageInput.value = "";
+            }
+        });
+
+        // Function to send a message via WebSocket
+        function sendMessage(sender, message) {
+            const messageData = {
+                sender: sender,
+                message: message,
+            };
+            websocket.send(JSON.stringify(messageData));
+        }
+
+        // Function to append a message to the chat
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message");
+            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Connect to the WebSocket when the page loads
+        window.addEventListener("load", () => {
+            connectWebSocket();
+        });
+    </script>
+</body>
+</html>
