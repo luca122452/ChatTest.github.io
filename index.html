@@ -3,55 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Player with Visualizer</title>
-    <style>
-        /* Define the styles for the player and visualizer */
-        #player-container {
-            width: 640px;
-            height: 360px;
-            margin: 0 auto;
-        }
-
-        #visualizer {
-            width: 100%;
-            height: 150px;
-            background-color: #333;
-        }
-    </style>
+    <title>Toss Release(after the timer is on 0 wait 2 more minutes)</title>
 </head>
 <body>
-    <h1>YouTube Player with Visualizer</h1>
-    <div id="player-container">
-        <!-- YouTube Player will be embedded here -->
+    <div id="timer">
+        <h1>Toss Release(after the timer is on 0 wait 2 more minutes)</h1>
+        <p id="countdown">60:00</p>
+        <button id="startButton">Start</button>
+        <button id="resetButton">Reset</button>
     </div>
-    <div id="visualizer">
-        <!-- Visualizer will be displayed here -->
-    </div>
-
-    <!-- Include the YouTube IFrame Player API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
-        // This function creates the YouTube player
-        let player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player-container', {
-                height: '360',
-                width: '640',
-                videoId: 'YOUR_YOUTUBE_VIDEO_ID', // Replace with your YouTube video ID
-                events: {
-                    'onReady': onPlayerReady,
-                },
-            });
+        let timer;
+        let minutes = 60;
+        let seconds = 0;
+        let isRunning = false;
+
+        const countdownElement = document.getElementById('countdown');
+        const startButton = document.getElementById('startButton');
+        const resetButton = document.getElementById('resetButton');
+
+        function startTimer() {
+            isRunning = true;
+            timer = setInterval(updateTimer, 1000);
+            startButton.disabled = true;
         }
 
-        // This function initializes the player
-        function onPlayerReady(event) {
-            event.target.playVideo();
+        function updateTimer() {
+            if (minutes === 0 && seconds === 0) {
+                clearInterval(timer);
+                isRunning = false;
+                startButton.disabled = false;
+                return;
+            }
+
+            if (seconds === 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                seconds--;
+            }
+
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(seconds).padStart(2, '0');
+
+            countdownElement.textContent = `${formattedMinutes}:${formattedSeconds}`;
         }
 
-        // Add your audio visualizer code here (e.g., using the Web Audio API)
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            minutes = 60;
+            seconds = 0;
+            countdownElement.textContent = '60:00';
+            startButton.disabled = false;
+        }
 
+        startButton.addEventListener('click', startTimer);
+        resetButton.addEventListener('click', resetTimer);
     </script>
 </body>
 </html>
